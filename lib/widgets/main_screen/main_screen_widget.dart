@@ -27,10 +27,10 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       ),
       body: IndexedStack(
         index: _selectedTab,
-        children: [
-          const Text('Index 0: Home'),
-          const MovieListWidget(),
-          const Text('Index 2: Serials'),
+        children: const [
+          Text('Index 0: Home'),
+          MovieListWidget(),
+          Text('Index 2: Serials'),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

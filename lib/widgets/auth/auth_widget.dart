@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Theme/app_button_style.dart';
-import 'package:themoviedb/widgets/main_screen/main_screen_widget.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({super.key});
@@ -18,8 +17,8 @@ class _AuthWidgetState extends State<AuthWidget> {
         title: const Text('Login to your account'),
       ),
       body: ListView(
-        children: [
-          const _HeaderWidget(),
+        children: const [
+          _HeaderWidget(),
         ],
       ),
     );
@@ -27,7 +26,7 @@ class _AuthWidgetState extends State<AuthWidget> {
 }
 
 class _HeaderWidget extends StatelessWidget {
-  const _HeaderWidget({super.key});
+  const _HeaderWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,6 @@ class _HeaderWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        // ignore: prefer_const_literals_to_create_immutables
         children: [
           const SizedBox(height: 25),
           const _FormWidget(),
@@ -73,7 +71,7 @@ class _HeaderWidget extends StatelessWidget {
 }
 
 class _FormWidget extends StatefulWidget {
-  const _FormWidget({super.key});
+  const _FormWidget();
 
   @override
   State<_FormWidget> createState() => __FormWidgetState();

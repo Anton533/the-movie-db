@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:themoviedb/resources/resources.dart';
 
 class Movie {
+  final int id;
   final String imageName;
   final String title;
   final String time;
   final String description;
 
   Movie({
+    required this.id,
     required this.imageName,
     required this.title,
     required this.time,
@@ -25,6 +27,7 @@ class MovieListWidget extends StatefulWidget {
 class _MovieListWidgetState extends State<MovieListWidget> {
   final _movies = [
     Movie(
+      id: 1,
       imageName: AppImages.mortalKombat,
       title: 'Mortal Kombat',
       time: 'April, 7, 2022',
@@ -32,24 +35,28 @@ class _MovieListWidgetState extends State<MovieListWidget> {
           'After escaping from an Estonian psychiatric facility, Leena Klammer travels to America by impersonating Esther, the missing daughter of a wealthy family. But when her mask starts to slip, she is put against a mother who will protect her family from the murderous “child” at any cost.',
     ),
     Movie(
+        id: 2,
         imageName: AppImages.mortalKombat,
         title: 'title 1',
         time: 'April, 7, 2022',
         description:
             'But when her mask starts to slip, she is put against a mother who will protect her family from the murderous “child” at any cost.'),
     Movie(
+        id: 3,
         imageName: AppImages.mortalKombat,
         title: 'title 2',
         time: 'April, 7, 2022',
         description:
             'After escaping from an Estonian psychiatric facility, Leena Klammer travels to America by impersonating Esther, the missing daughter of a wealthy family.'),
     Movie(
+        id: 4,
         imageName: AppImages.mortalKombat,
         title: 'title 3',
         time: 'April, 7, 2022',
         description:
             'But when her mask starts to slip, she is put against a mother who will protect her family from the murderous “child” at any cost.'),
     Movie(
+        id: 5,
         imageName: AppImages.mortalKombat,
         title: 'title 4',
         time: 'April, 7, 2022',
@@ -80,6 +87,14 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     super.initState();
     _searchMovies();
     _searchController.addListener((_searchMovies));
+  }
+
+  void _onMovieTap(int index) {
+    final id = _movies[index].id;
+    Navigator.of(context).pushNamed(
+      '/main_screen/movie_details',
+      arguments: id,
+    );
   }
 
   @override
@@ -151,7 +166,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () => _onMovieTap(movie.id),
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                     ),
                   )
