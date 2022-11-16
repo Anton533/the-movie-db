@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
-import '../../../Theme/app_colors.dart';
+import '../../theme/app_colors.dart';
 import '../auth/auth_widget.dart';
 import '../main_screen/main_screen_widget.dart';
 import '../movie_details_widget/movie_details_widget.dart';

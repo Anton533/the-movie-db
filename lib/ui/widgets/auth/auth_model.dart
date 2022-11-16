@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/domain/api_client/api_client.dart';
+import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
 
 class AuthModel extends ChangeNotifier {
+  final _apiClient = ApiClient();
+  final _sessionDataProvider = SessionDataProvider();
+
   final loginTextController = TextEditingController();
   final passwordTextController = TextEditingController();
 
@@ -9,8 +14,49 @@ class AuthModel extends ChangeNotifier {
 
   bool _isAuthProgress = false;
   bool get canStartAuth => !_isAuthProgress;
+  bool get isAuthProgress => _isAuthProgress;
 
-  Future<void> auth(BuildContext context) async {}
+  Future<void> auth(BuildContext context) async {
+    final login = loginTextController.text;
+    final password = passwordTextController.text;
+    final navigator = Navigator.of(context);
+
+    if (login.isEmpty || password.isEmpty) {
+      _errorMessage = 'Введите логин и пароль';
+      notifyListeners();
+      return;
+    }
+
+    _errorMessage = null;
+    _isAuthProgress = true;
+    notifyListeners();
+    String? sessionId;
+
+    try {
+      sessionId = await _apiClient.auth(
+        username: login,
+        password: password,
+      );
+    } catch (e) {
+      _errorMessage = 'Неправельный логин или пароль!';
+    }
+    _isAuthProgress = false;
+
+    if (errorMessage != null) {
+      notifyListeners();
+      return;
+    }
+
+    if (sessionId == null) {
+      _errorMessage = 'Неизвестная ошибка, повторите попытку';
+      notifyListeners();
+      return;
+    }
+
+    await _sessionDataProvider.setSessionId(sessionId);
+
+    navigator.pushNamed('/main_screen');
+  }
 }
 
 class AuthModelProvider extends InheritedNotifier {

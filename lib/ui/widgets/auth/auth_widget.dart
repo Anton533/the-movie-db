@@ -142,6 +142,12 @@ class _AuthButtonWidget extends StatelessWidget {
     final model = AuthModelProvider.watch(context).model;
     const appColor = Color(0xFF01B4E4);
     final onPressed = model.canStartAuth ? () => model.auth(context) : null;
+    final child = model.isAuthProgress == true
+        ? const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(strokeWidth: 2))
+        : const Text('Login');
 
     return ElevatedButton(
       onPressed: onPressed, //_auth,
@@ -160,7 +166,7 @@ class _AuthButtonWidget extends StatelessWidget {
         ),
         // ???
       ),
-      child: const Text('Login'),
+      child: child,
     );
   }
 }
