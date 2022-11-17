@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
 
 import '../movie_list/movie_list_widget.dart';
 
@@ -24,11 +25,17 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('TMDB'),
+        actions: [
+          IconButton(
+            onPressed: () => SessionDataProvider().setSessionId(null),
+            icon: const Icon(Icons.login),
+          )
+        ],
       ),
       body: IndexedStack(
         index: _selectedTab,
         children: const [
-          Text('Index 0: Home'),
+          Text('Index 0: News'),
           MovieListWidget(),
           Text('Index 2: Serials'),
         ],
@@ -38,7 +45,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'News',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.movie_outlined),

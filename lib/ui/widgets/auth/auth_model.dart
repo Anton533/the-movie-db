@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -19,7 +20,6 @@ class AuthModel extends ChangeNotifier {
   Future<void> auth(BuildContext context) async {
     final login = loginTextController.text;
     final password = passwordTextController.text;
-    final navigator = Navigator.of(context);
 
     if (login.isEmpty || password.isEmpty) {
       _errorMessage = 'Введите логин и пароль';
@@ -55,7 +55,8 @@ class AuthModel extends ChangeNotifier {
 
     await _sessionDataProvider.setSessionId(sessionId);
 
-    navigator.pushNamed('/main_screen');
+    Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRoutNames.mainScreen);
   }
 }
 

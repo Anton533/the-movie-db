@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
+import 'package:themoviedb/ui/widgets/app/my_app_model.dart';
 import '../../theme/app_colors.dart';
-import '../auth/auth_widget.dart';
-import '../main_screen/main_screen_widget.dart';
-import '../movie_details_widget/movie_details_widget.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final MyAppModel model;
+  static final mainNavigation = MainNavigation();
+  const MyApp({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +21,9 @@ class MyApp extends StatelessWidget {
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.grey,
           )),
-      routes: {
-        '/auth': (context) => AuthModelProvider(
-              model: AuthModel(),
-              child: const AuthWidget(),
-            ),
-        '/main_screen': (context) => const MainScreenWidget(),
-        '/main_screen/movie_details': (context) {
-          final arguments = ModalRoute.of(context)?.settings.arguments;
-          if (arguments is int) {
-            return MovieDetailsWidget(movieId: arguments);
-          } else {
-            return const MovieDetailsWidget(movieId: 1);
-          }
-        },
-      },
-      initialRoute: '/auth',
+      routes: mainNavigation.routes,
+      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }
 }
