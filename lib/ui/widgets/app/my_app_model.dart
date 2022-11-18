@@ -10,3 +10,4 @@ class MyAppModel {
     _isAuth = sesseonId != null;
   }
 }
+
