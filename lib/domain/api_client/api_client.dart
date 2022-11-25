@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-enum ApiClientExceptionType {
-  network,
-  auth,
-  other,
-}
+import '../entity/popular_movie_response.dart';
+
+enum ApiClientExceptionType { network, auth, other }
 
 class ApiClientException implements Exception {
   final ApiClientExceptionType type;
@@ -14,14 +12,12 @@ class ApiClientException implements Exception {
 }
 
 class ApiClient {
-  static String imageUrl(String path) {
-    return '$_imageUrl$path';
-  }
-
   final _client = HttpClient();
   static const _host = 'https://api.themoviedb.org/3';
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = '5eb1af50a385519917194d83bbebfab3';
+
+  static String imageUrl(String path) => _imageUrl + path;
 
   Future<String> auth({
     required String username,
@@ -148,7 +144,7 @@ class ApiClient {
   }) async {
     String pars(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
-      final sessionId = json['session_id'] as String;
+      final sessionId = jsonMap['session_id'] as String;
       return sessionId;
     }
 
@@ -163,6 +159,54 @@ class ApiClient {
       parser,
       parameters,
       {'api_key': _apiKey},
+    );
+    return result;
+  }
+
+  Future<PopularMovieResponse> popularMovie(int page, String locale) async {
+    PopularMovieResponse pars(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final parser = pars;
+
+    final result = _get(
+      '/movie/popular',
+      parser,
+      {
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': locale,
+      },
+    );
+    return result;
+  }
+
+  Future<PopularMovieResponse> searchMovie(
+    int page,
+    String locale,
+    String query,
+  ) async {
+    PopularMovieResponse pars(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final parser = pars;
+
+    final result = _get(
+      '/search/movie',
+      parser,
+      {
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': locale,
+        'query': query,
+        'include_adult': true.toString(),
+      },
     );
     return result;
   }

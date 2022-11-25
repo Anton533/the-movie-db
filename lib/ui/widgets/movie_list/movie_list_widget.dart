@@ -1,114 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
+import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/resources/resources.dart';
-import 'package:themoviedb/ui/navigation/main_navigation.dart';
+import 'package:themoviedb/ui/widgets/movie_list/movie_list_model.dart';
 
-class Movie {
-  final int id;
-  final String imageName;
-  final String title;
-  final String time;
-  final String description;
-
-  Movie({
-    required this.id,
-    required this.imageName,
-    required this.title,
-    required this.time,
-    required this.description,
-  });
-}
-
-class MovieListWidget extends StatefulWidget {
+class MovieListWidget extends StatelessWidget {
   const MovieListWidget({super.key});
 
   @override
-  State<MovieListWidget> createState() => _MovieListWidgetState();
-}
-
-class _MovieListWidgetState extends State<MovieListWidget> {
-  final _movies = [
-    Movie(
-      id: 1,
-      imageName: AppImages.mortalKombat,
-      title: 'Mortal Kombat',
-      time: 'April, 7, 2022',
-      description:
-          'After escaping from an Estonian psychiatric facility, Leena Klammer travels to America by impersonating Esther, the missing daughter of a wealthy family. But when her mask starts to slip, she is put against a mother who will protect her family from the murderous “child” at any cost.',
-    ),
-    Movie(
-        id: 2,
-        imageName: AppImages.mortalKombat,
-        title: 'title 1',
-        time: 'April, 7, 2022',
-        description:
-            'But when her mask starts to slip, she is put against a mother who will protect her family from the murderous “child” at any cost.'),
-    Movie(
-        id: 3,
-        imageName: AppImages.mortalKombat,
-        title: 'title 2',
-        time: 'April, 7, 2022',
-        description:
-            'After escaping from an Estonian psychiatric facility, Leena Klammer travels to America by impersonating Esther, the missing daughter of a wealthy family.'),
-    Movie(
-        id: 4,
-        imageName: AppImages.mortalKombat,
-        title: 'title 3',
-        time: 'April, 7, 2022',
-        description:
-            'But when her mask starts to slip, she is put against a mother who will protect her family from the murderous “child” at any cost.'),
-    Movie(
-        id: 5,
-        imageName: AppImages.mortalKombat,
-        title: 'title 4',
-        time: 'April, 7, 2022',
-        description:
-            'After escaping from an Estonian psychiatric facility, Leena Klammer travels to America by impersonating Esther, the missing daughter of a wealthy family.'),
-  ];
-
-  var _filteredMovies = <Movie>[];
-
-  final _searchController = TextEditingController();
-
-  void _searchMovies() {
-    final query = _searchController.text;
-
-    setState(() {
-      if (query.isNotEmpty) {
-        _filteredMovies = _movies.where((Movie movie) {
-          return movie.title.toLowerCase().contains(query.toLowerCase());
-        }).toList();
-      } else {
-        _filteredMovies = _movies;
-      }
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _searchMovies();
-    _searchController.addListener((_searchMovies));
-  }
-
-  void _onMovieTap(int index) {
-    final id = _movies[index].id;
-    Navigator.of(context).pushNamed(
-      MainNavigationRoutNames.movieDetails,
-      arguments: id,
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieListModel>(context);
     return Stack(
       children: [
         ListView.builder(
           padding: const EdgeInsets.only(top: 70),
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          itemCount: _filteredMovies.length,
+          itemCount: model.movies.length,
           itemExtent: 163,
           itemBuilder: (BuildContext context, int index) {
-            final movie = _filteredMovies[index];
+            model.showedMoveiAtIndex(index);
+            final movie = model.movies[index];
+            final posterPath = movie.posterPath;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Stack(
@@ -129,12 +41,17 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                         ]),
                     child: Row(
                       children: [
-                        Image(image: AssetImage(movie.imageName)),
+                        posterPath != null
+                            ? Image.network(
+                                ApiClient.imageUrl(posterPath),
+                                width: 95,
+                              )
+                            // : const SizedBox.shrink(),
+                            : const Image(image: AssetImage(AppImages.noFoto)),
                         const SizedBox(width: 15),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            // ignore: prefer_const_literals_to_create_immutables
                             children: [
                               const SizedBox(height: 20),
                               Text(
@@ -146,14 +63,14 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                movie.time,
+                                model.stringFromDate(movie.releaseDate),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(color: Colors.grey),
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                movie.description,
+                                movie.overview,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -167,7 +84,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () => _onMovieTap(movie.id),
+                      onTap: () => model.onMovieTap(context, index),
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                     ),
                   )
@@ -179,7 +96,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
-            controller: _searchController,
+            onChanged: model.searchMovie,
             decoration: InputDecoration(
               labelText: 'Search',
               filled: true,

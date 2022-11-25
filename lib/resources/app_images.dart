@@ -7,4 +7,5 @@ class AppImages {
   static const String michaelBJordan = 'images/michael_b_jordan.jpg';
   static const String subTopHeader = 'images/subTopHeader.jpg';
   static const String topHeader = 'images/topHeader.jpg';
+  static const String noFoto = 'images/no_foto.jpg';
 }
