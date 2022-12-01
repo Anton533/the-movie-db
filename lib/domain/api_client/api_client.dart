@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
+
+import '../entity/movie_details.dart';
 import '../entity/popular_movie_response.dart';
 
 enum ApiClientExceptionType { network, auth, other }
@@ -15,7 +18,10 @@ class ApiClient {
   final _client = HttpClient();
   static const _host = 'https://api.themoviedb.org/3';
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
-  static const _apiKey = '5eb1af50a385519917194d83bbebfab3';
+  static const _apiKey = '3224fb0b9f091c1c5140acb17dc7eda5';
+
+  // myApiKey = '3224fb0b9f091c1c5140acb17dc7eda5';
+  // gitApiKey = '5eb1af50a385519917194d83bbebfab3';
 
   static String imageUrl(String path) => _imageUrl + path;
 
@@ -206,6 +212,29 @@ class ApiClient {
         'language': locale,
         'query': query,
         'include_adult': true.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieDetails> movieDetails(
+    int movieId,
+    String locale,
+  ) async {
+    MovieDetails pars(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetails.fromJson(jsonMap);
+      return response;
+    }
+
+    final parser = pars;
+
+    final result = _get(
+      '/movie/$movieId',
+      parser,
+      {
+        'api_key': _apiKey,
+        'language': locale,
       },
     );
     return result;

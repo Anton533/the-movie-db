@@ -49,7 +49,8 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
         children: [
           const Text('Index 0: News'),
           NotifierProvider(
-            model: movieListModel,
+            create: () => movieListModel,
+            isManagingModel: false,
             child: const MovieListWidget(),
           ),
           const Text('Index 2: Serials'),
