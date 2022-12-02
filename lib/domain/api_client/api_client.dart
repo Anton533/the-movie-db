@@ -195,13 +195,13 @@ class ApiClient {
     String locale,
     String query,
   ) async {
-    final parser = (dynamic json) {
+    PopularMovieResponse pars(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
       return response;
-    };
+    }
 
-    // final parser = pars;
+    final parser = pars;
 
     final result = _get(
       '/search/movie',
