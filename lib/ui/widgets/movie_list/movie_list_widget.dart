@@ -5,7 +5,7 @@ import 'package:themoviedb/resources/resources.dart';
 import 'package:themoviedb/ui/widgets/movie_list/movie_list_model.dart';
 
 class MovieListWidget extends StatelessWidget {
-  const MovieListWidget({super.key});  
+  const MovieListWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

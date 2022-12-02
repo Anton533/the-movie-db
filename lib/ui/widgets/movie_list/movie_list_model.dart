@@ -16,7 +16,7 @@ class MovieListModel extends ChangeNotifier {
   var _isLoadingInProgres = false;
   String? _searchQuery;
   String _locale = '';
-  Timer? searchDeboubce;
+  Timer? searchDebounce;
 
   List<Movie> get movies => List.unmodifiable(_movies);
   late DateFormat _dateFromat;
@@ -24,7 +24,7 @@ class MovieListModel extends ChangeNotifier {
   String stringFromDate(DateTime? date) =>
       date != null ? _dateFromat.format(date) : '';
 
-  void setupLocale(BuildContext context) async {
+  Future<void> setupLocale(BuildContext context) async {
     final locale = Localizations.localeOf(context).toLanguageTag();
     if (_locale == locale) return;
     _locale = locale;
@@ -35,7 +35,7 @@ class MovieListModel extends ChangeNotifier {
   Future<void> _resetlist() async {
     _currentPage = 0;
     _totalPage = 1;
-    _movies.clear;
+    _movies.clear();
     await _loadNextPage();
   }
 
@@ -74,8 +74,9 @@ class MovieListModel extends ChangeNotifier {
   }
 
   Future<void> searchMovie(String text) async {
-    searchDeboubce?.cancel();
-    searchDeboubce = Timer(const Duration(seconds: 1), () async {
+    print(text);
+    searchDebounce?.cancel();
+    searchDebounce = Timer(const Duration(seconds: 1), () async {
       final searchQuery = text.isNotEmpty ? text : null;
       if (_searchQuery == searchQuery) return;
       _searchQuery = searchQuery;
