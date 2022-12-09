@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
-
 import '../entity/movie_details.dart';
 import '../entity/popular_movie_response.dart';
 
@@ -233,6 +231,7 @@ class ApiClient {
       '/movie/$movieId',
       parser,
       {
+        'append_to_response': 'credits',
         'api_key': _apiKey,
         'language': locale,
       },
