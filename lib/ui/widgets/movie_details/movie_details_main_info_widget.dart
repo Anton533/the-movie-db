@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 import 'package:themoviedb/ui/widgets/elements/radial_percent_widget.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 
@@ -147,6 +148,12 @@ class _ScoreWidget extends StatelessWidget {
     final model = NotifierProvider.watch<MovieDetailsModel>(context);
     var voteAverage = model.movieDetails?.voteAverage ?? 0;
     voteAverage = voteAverage * 10;
+
+    final videos = model.movieDetails?.videos.results
+        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -182,21 +189,34 @@ class _ScoreWidget extends StatelessWidget {
           ],
         ),
         Container(width: 2, height: 15, color: Colors.grey),
-        TextButton(
-            onPressed: () {},
-            child: Row(
-              children: const [
-                Icon(Icons.play_arrow),
-                SizedBox(width: 5),
-                Text(
-                  'Play Treiler',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
+        trailerKey != null
+            ? TextButton(
+                onPressed: () => Navigator.of(context).pushNamed(
+                  MainNavigationRoutNames.movieTrailer,
+                  arguments: trailerKey,
                 ),
-              ],
-            )),
+                child: Row(
+                  children: const [
+                    Icon(Icons.play_arrow),
+                    SizedBox(width: 5),
+                    Text(
+                      'Play Trailer',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : const Text(
+                'No Trailer',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white,
+                ),
+              )
       ],
     );
   }

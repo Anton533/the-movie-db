@@ -74,7 +74,6 @@ class MovieListModel extends ChangeNotifier {
   }
 
   Future<void> searchMovie(String text) async {
-    print(text);
     searchDebounce?.cancel();
     searchDebounce = Timer(const Duration(seconds: 1), () async {
       final searchQuery = text.isNotEmpty ? text : null;

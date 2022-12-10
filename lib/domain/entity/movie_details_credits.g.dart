@@ -55,7 +55,7 @@ Map<String, dynamic> _$ActorToJson(Actor instance) => <String, dynamic>{
       'order': instance.order,
     };
 
-Employee _$CrewFromJson(Map<String, dynamic> json) => Employee(
+Employee _$EmployeeFromJson(Map<String, dynamic> json) => Employee(
       adult: json['adult'] as bool,
       gender: json['gender'] as int?,
       id: json['id'] as int,
@@ -69,7 +69,7 @@ Employee _$CrewFromJson(Map<String, dynamic> json) => Employee(
       job: json['job'] as String,
     );
 
-Map<String, dynamic> _$CrewToJson(Employee instance) => <String, dynamic>{
+Map<String, dynamic> _$EmployeeToJson(Employee instance) => <String, dynamic>{
       'adult': instance.adult,
       'gender': instance.gender,
       'id': instance.id,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/resources/resources.dart';
 
 import '../../../Library/Widgets/Inherited/provider.dart';
 import '../../../domain/api_client/api_client.dart';

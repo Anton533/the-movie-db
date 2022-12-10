@@ -219,19 +219,19 @@ class ApiClient {
     int movieId,
     String locale,
   ) async {
-    MovieDetails pars(dynamic json) {
+    MovieDetails parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = MovieDetails.fromJson(jsonMap);
       return response;
     }
 
-    final parser = pars;
+    // final parser = pars;
 
     final result = _get(
       '/movie/$movieId',
       parser,
       {
-        'append_to_response': 'credits',
+        'append_to_response': 'credits,videos',
         'api_key': _apiKey,
         'language': locale,
       },
