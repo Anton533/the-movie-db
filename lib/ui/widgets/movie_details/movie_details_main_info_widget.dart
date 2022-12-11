@@ -85,7 +85,18 @@ class _TopPosterWidget extends StatelessWidget {
     final model = NotifierProvider.watch<MovieDetailsModel>(context);
     final backdropPath = model.movieDetails?.backdropPath;
     final posterPath = model.movieDetails?.posterPath;
-
+    final Icon icon;
+    if (model.isFavorites == true) {
+      icon = const Icon(
+        Icons.favorite,
+        color: Colors.red,
+      );
+    } else {
+      icon = const Icon(
+        Icons.favorite_outline,
+        color: Colors.white,
+      );
+    }
     return Stack(
       children: [
         backdropPath != null
@@ -98,6 +109,16 @@ class _TopPosterWidget extends StatelessWidget {
           child: posterPath != null
               ? Image.network(ApiClient.imageUrl(posterPath))
               : const SizedBox.shrink(),
+        ),
+        Positioned(
+          right: 10,
+          child: IconButton(
+            onPressed: () => model.toggleFavorite(),
+            icon: icon,
+            // Icon(model.isFavorites == true
+            //     ? Icons.favorite
+            //     : Icons.favorite_outline),
+          ),
         ),
       ],
     );
