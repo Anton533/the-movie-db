@@ -4,7 +4,7 @@ import 'dart:io';
 import '../entity/movie_details.dart';
 import '../entity/popular_movie_response.dart';
 
-enum ApiClientExceptionType { network, auth, other }
+enum ApiClientExceptionType { network, auth, other, sessionExpired }
 
 class ApiClientException implements Exception {
   final ApiClientExceptionType type;
@@ -291,7 +291,7 @@ class ApiClient {
     return result;
   }
 
-  Future<int> markAsFavorite({
+  Future<bool> markAsFavorite({
     required int accountId,
     required String sessionId,
     required MediaType mediaType,
@@ -299,10 +299,9 @@ class ApiClient {
     required bool isFavorite,
   }) async {
     parser(dynamic json) {
-      // final jsonMap = json as Map<String, dynamic>;
-      // final result = jsonMap['favorite'] as bool;
-      // return result;
-      return 1;
+      final jsonMap = json as Map<String, dynamic>;
+      final result = jsonMap['success'] as bool;
+      return result;
     }
 
     final parameters = <String, dynamic>{
@@ -311,7 +310,7 @@ class ApiClient {
       'favorite': isFavorite,
     };
 
-    final result = _post(
+    final result = await _post(
       '/account/$accountId/favorite',
       parser,
       parameters,
@@ -329,6 +328,8 @@ class ApiClient {
       final code = status is int ? status : 0;
       if (code == 30) {
         throw ApiClientException(ApiClientExceptionType.auth);
+      } else if (code == 3) {
+        throw ApiClientException(ApiClientExceptionType.sessionExpired);
       } else {
         throw ApiClientException(ApiClientExceptionType.other);
       }

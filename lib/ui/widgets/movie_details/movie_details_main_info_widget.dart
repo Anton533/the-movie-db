@@ -86,7 +86,7 @@ class _TopPosterWidget extends StatelessWidget {
     final backdropPath = model.movieDetails?.backdropPath;
     final posterPath = model.movieDetails?.posterPath;
     final Icon icon;
-    if (model.isFavorites == true) {
+    if (model.isFavorite == true) {
       icon = const Icon(
         Icons.favorite,
         color: Colors.red,
@@ -115,11 +115,12 @@ class _TopPosterWidget extends StatelessWidget {
           child: IconButton(
             onPressed: () => model.toggleFavorite(),
             icon: icon,
-            // Icon(model.isFavorites == true
-            //     ? Icons.favorite
-            //     : Icons.favorite_outline),
+            //     Icon(model.isFavorite == true
+            //         ? Icons.favorite
+            //         : Icons.favorite_outline),
+            // color: model.isFavorite ? Colors.red : Colors.white,
           ),
-        ),
+        )
       ],
     );
   }

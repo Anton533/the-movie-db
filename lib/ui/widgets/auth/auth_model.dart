@@ -51,6 +51,9 @@ class AuthModel extends ChangeNotifier {
         case ApiClientExceptionType.other:
           _errorMessage = 'Произошла ошибка. Попробуйте еще раз.';
           break;
+        default:
+          // ignore: avoid_print
+          print(e);
       }
     }
     _isAuthProgress = false;

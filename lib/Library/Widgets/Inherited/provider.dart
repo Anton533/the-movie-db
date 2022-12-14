@@ -92,6 +92,27 @@ class Provider<Model> extends InheritedWidget {
           child: child,
         );
 
+  static Model watch<Model>(BuildContext context) {
+    final widget =
+        context.dependOnInheritedWidgetOfExactType<Provider<Model>>();
+    if (widget == null) {
+      throw ErrorDescription(
+          "Widget must be rendered within [NotifierProvider]");
+    }
+    return widget.model;
+  }
+
+  static Model read<Model>(BuildContext context) {
+    final widget = context
+        .getElementForInheritedWidgetOfExactType<Provider<Model>>()
+        ?.widget;
+    if (widget == null || widget is! Provider<Model>) {
+      throw ErrorDescription(
+          "Widget must be rendered within [NotifierProvider]");
+    }
+    return widget.model;
+  }
+
   @override
   bool updateShouldNotify(covariant Provider oldWidget) {
     return model != oldWidget.model;

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/Library/Widgets/Inherited/provider.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 import 'package:themoviedb/ui/widgets/app/my_app_model.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../theme/app_colors.dart';
 
 class MyApp extends StatelessWidget {
-  final MyAppModel model;
   static final mainNavigation = MainNavigation();
-  const MyApp({super.key, required this.model});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final model = Provider.read<MyAppModel>(context);
     return MaterialApp(
       title: 'the_movie_db',
       theme: ThemeData(

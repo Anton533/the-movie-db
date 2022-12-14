@@ -10,12 +10,13 @@ class MovieDetailsModel extends ChangeNotifier {
 
   final int movieId;
   MovieDetails? _movieDetails;
-  bool _isFavorites = false;
+  bool _isFavorite = false;
   String _locale = '';
   late DateFormat _dateFromat;
+  Future<void> Function()? onSessionExpired;
 
   MovieDetails? get movieDetails => _movieDetails;
-  bool get isFavorites => _isFavorites;
+  bool get isFavorite => _isFavorite;
 
   MovieDetailsModel(this.movieId);
 
@@ -31,12 +32,16 @@ class MovieDetailsModel extends ChangeNotifier {
   }
 
   Future<void> loadDetails() async {
-    _movieDetails = await _apiClient.movieDetails(movieId, _locale);
-    final sessionId = await _sessionDataProvider.getSessionId();
-    if (sessionId != null) {
-      _isFavorites = await _apiClient.isFavorites(movieId, sessionId);
+    try {
+      _movieDetails = await _apiClient.movieDetails(movieId, _locale);
+      final sessionId = await _sessionDataProvider.getSessionId();
+      if (sessionId != null) {
+        _isFavorite = await _apiClient.isFavorites(movieId, sessionId);
+      }
+      notifyListeners();
+    } on ApiClientException catch (exception) {
+      _handleApiClientException(exception);
     }
-    notifyListeners();
   }
 
   Future<void> toggleFavorite() async {
@@ -45,14 +50,39 @@ class MovieDetailsModel extends ChangeNotifier {
 
     if (sessionId == null || accountId == null) return;
 
-    _isFavorites = !_isFavorites;
-    notifyListeners();
-    await _apiClient.markAsFavorite(
-      accountId: accountId,
-      sessionId: sessionId,
-      mediaType: MediaType.movie,
-      mediaId: movieId,
-      isFavorite: _isFavorites,
-    );
+    void isFavoriteUpdate() {
+      _isFavorite = !_isFavorite;
+      notifyListeners();
+    }
+
+// Optimistic update
+    isFavoriteUpdate();
+
+    try {
+      final success = await _apiClient.markAsFavorite(
+        accountId: accountId,
+        sessionId: sessionId,
+        mediaType: MediaType.movie,
+        mediaId: movieId,
+        isFavorite: _isFavorite,
+      );
+      if (!success) {
+        // revert optimistic update
+        isFavoriteUpdate();
+      }
+    } on ApiClientException catch (exception) {
+      // revert optimistic update
+      isFavoriteUpdate();
+      _handleApiClientException(exception);
+    }
+  }
+
+  void _handleApiClientException(ApiClientException exception) {
+    switch (exception.type) {
+      case ApiClientExceptionType.sessionExpired:
+        onSessionExpired?.call();
+        break;
+      default:
+    }
   }
 }

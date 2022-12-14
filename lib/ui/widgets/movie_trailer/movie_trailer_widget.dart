@@ -19,7 +19,6 @@ class _MovieTrailerWidgetState extends State<MovieTrailerWidget> {
       initialVideoId: widget.youtubeKey,
       flags: const YoutubePlayerFlags(
         autoPlay: true,
-        mute: true,
       ),
     );
   }
